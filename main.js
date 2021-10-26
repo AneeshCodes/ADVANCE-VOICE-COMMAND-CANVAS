@@ -1,50 +1,73 @@
+x = 0;
+y = 0;
+screen_width = 0
+screen_height = 0
+apple = ""
+speak_data = ""
+to_number = ""
 
-drawCircle = ""
-drawRect = ""
+draw_apple = "";
 
 var SpeechRecognition = window.webkitSpeechRecognition;
-var recognition = new SpeechRecognition()
-
-function start(){
-  document.getElementById('status').innerHTML = "System is listening. Please Speak Now."
-  recognition.start()
-}
-recognition.onresult = function(event){
-  console.log(event)
-  content = event.results[0][0].transcript
-  document.getElementById('status').innerHTML = "Speech has been recognized as " + content
-  if(content == "Circle"){
-    x = Math.floor(Math.random()*800)
-    y = Math.floor(Math.random()*500)
-    document.getElementById('status').innerHTML = "Started Drawing Circle..."
-    drawCircle = "set"
-  }
-  if(content == "rectangle"){
-    x = Math.floor(Math.random()*800)
-    y = Math.floor(Math.random()*500)
-    document.getElementById('status').innerHTML = "Started Drawing Rectangle..."
-    drawRect = "set"
-  }
   
+var recognition = new SpeechRecognition();
+
+function start()
+{
+  document.getElementById("status").innerHTML = "System is listening please speak";  
+  recognition.start();
+} 
+ 
+recognition.onresult = function(event) {
+
+ console.log(event); 
+
+ content = event.results[0][0].transcript;
+
+ to_number = Number(content);
+ 
+    document.getElementById("status").innerHTML = "The speech has been recognized: " + content; 
+
+    if(Number.isInteger(to_number)){
+      document.getElementById("status").innerHTML = "Started drawing apple";
+      draw_apple = 'set';
+    }
+    else{
+      document.getElementById("status").innerHTML = "The speech has not recognized a number";
+    }
+}
+
+function setup() {
+  screen_width = window.innerWidth;
+  screen_height = window.innerHeight;
+  canvas = createCanvas(900, 600);
+
+}
+
+function draw() {
+  if(draw_apple == "set")
+  {
+    for(i = 1; i <= to_number; i++){
+      x = Math.floor(Math.random()*700);
+      y = Math.floor(Math.random()*400);
+      image(apple, x, y, 150, 150)
+    }
+    document.getElementById("status").innerHTML = to_number + " Apples drawn";
+    draw_apple = "";
+    speak()
+  }
+}
+
+function speak(){
+    var synth = window.speechSynthesis;
+
+    var utterThis = new SpeechSynthesisUtterance(speak_data);
+
+    synth.speak(utterThis);
+
+    speak_data = "";
 }
 
 function preload(){
-
-}
-
-function setup(){
-  canvas = createCanvas(900, 600);
-}
-
-function draw(){
-  if(drawCircle == 'set'){
-    circle(x,y, 100);
-    document.getElementById('status').innerHTML = "Circle is Drawn"
-    drawCircle = ""
-  }
-  if(drawRect == 'set'){
-    rect(x,y, 100, 200);
-    document.getElementById('status').innerHTML = "Rectangle is Drawn"
-    drawRect = ""
-  }
+  apple = loadImage('apple.png')
 }
