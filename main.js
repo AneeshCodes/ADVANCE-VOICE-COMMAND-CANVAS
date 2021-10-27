@@ -47,13 +47,15 @@ function setup() {
 function draw() {
   if(draw_apple == "set")
   {
+    draw_apple = "";
+    clear(0,0,900,600)
     for(i = 1; i <= to_number; i++){
       x = Math.floor(Math.random()*700);
       y = Math.floor(Math.random()*400);
       image(apple, x, y, 150, 150)
     }
     document.getElementById("status").innerHTML = to_number + " Apples drawn";
-    draw_apple = "";
+    
     speak()
   }
 }
